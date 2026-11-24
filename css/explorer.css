@@ -1,0 +1,106 @@
+/* Villa explorer: tap a floor on the facade, it zooms in and shows that level.
+   Used on the home page (#levels) and on villa-explorer.html. Every rule is scoped to .vx. */
+@keyframes vxPing { 70% { box-shadow: 0 0 0 12px rgba(201,168,106,0); } 100% { box-shadow: 0 0 0 0 rgba(201,168,106,0); } }
+@keyframes vxPanelIn { from { opacity: 0; transform: translateX(24px); } to { opacity: 1; transform: none; } }
+@keyframes vxThumbIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+.vx-hint { display: inline-flex; align-items: center; gap: 10px; font-size: 13px; color: var(--on-dark-soft); }
+.vx-hint i { width: 8px; height: 8px; border-radius: 50%; background: var(--champagne); box-shadow: 0 0 0 0 rgba(201,168,106,.6); animation: vxPing 2s infinite; }
+
+.vx { display: grid; grid-template-columns: 210px minmax(0, 520px) minmax(0, 1fr); gap: clamp(20px, 3vw, 48px); align-items: start; color: var(--on-dark); }
+
+/* level rail */
+.vx .rail { position: sticky; top: 100px; display: flex; flex-direction: column; gap: 2px; }
+.vx .rail button {
+  display: grid; grid-template-columns: 34px 1fr; align-items: baseline; text-align: left; gap: 8px;
+  background: none; border: 0; border-left: 1px solid rgba(201,168,106,.25); padding: 14px 12px 14px 16px;
+  color: var(--on-dark-soft); transition: color .25s var(--ease), border-color .25s var(--ease), background .25s var(--ease);
+}
+.vx .rail button .no { font-family: var(--serif); color: var(--champagne); font-size: 15px; }
+.vx .rail button .nm { font-family: var(--serif); font-size: 19px; line-height: 1.2; }
+.vx .rail button .sub { grid-column: 2; font-size: 11.5px; letter-spacing: .04em; margin-top: 2px; opacity: .8; }
+.vx .rail button:hover, .vx .rail button.hover { color: var(--ivory); border-left-color: var(--champagne); background: rgba(201,168,106,.06); }
+.vx .rail button[aria-pressed="true"] { color: var(--ivory); border-left: 2px solid var(--champagne); background: rgba(201,168,106,.1); }
+.vx .rail .all { margin-top: 14px; border-left-color: transparent; font-size: 12px; letter-spacing: .16em; text-transform: uppercase; display: block; color: var(--champagne); }
+.vx .rail .lift { font-size: 11px; letter-spacing: .2em; text-transform: uppercase; color: var(--on-dark-soft); margin: 0 0 12px 16px; }
+
+/* facade stage */
+.vx .stage-wrap { position: sticky; top: 100px; }
+.vx .stage { position: relative; width: 100%; aspect-ratio: 1024 / 1100; overflow: hidden; border-radius: 2px; background: #0B1526; box-shadow: 0 30px 60px rgba(0,0,0,.35); outline: 1px solid rgba(201,168,106,.3); outline-offset: 10px; }
+.vx .zoom { position: absolute; left: 0; top: 0; width: 100%; transform-origin: 0 0; transition: transform 1.1s cubic-bezier(.65,0,.25,1); will-change: transform; }
+.vx .zoom img { width: 100%; height: auto; display: block; user-select: none; -webkit-user-drag: none; }
+.vx .band {
+  position: absolute; left: 16.5%; width: 66.5%; background: transparent; border: 0; padding: 0; cursor: pointer;
+  outline: 1px solid transparent; transition: outline-color .3s var(--ease), background-color .3s var(--ease);
+}
+.vx .band:hover, .vx .band.hover, .vx .band:focus-visible { outline: 1.5px solid var(--champagne); background: rgba(201,168,106,.14); }
+.vx .band .tag {
+  /* centred inside the floor band, so it can never run past the photo's edge and get cut */
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); white-space: nowrap; pointer-events: none;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+  background: var(--champagne); color: var(--navy); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; font-weight: 600;
+  padding: 6px 10px; border-radius: 2px; opacity: 0; transition: opacity .25s var(--ease);
+}
+.vx .band:hover .tag, .vx .band.hover .tag, .vx .band:focus-visible .tag { opacity: 1; }
+.vx .stage.zoomed .band { pointer-events: none; }
+.vx .spot { position: absolute; left: 16.5%; width: 66.5%; pointer-events: none; opacity: 0; transition: opacity .6s var(--ease) .5s;
+  box-shadow: 0 0 0 4000px rgba(11,21,38,.62); outline: 1px solid var(--champagne); }
+.vx .stage.zoomed .spot { opacity: 1; }
+.vx .stage-cap { display: flex; justify-content: space-between; align-items: center; margin-top: 22px; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--on-dark-soft); }
+.vx .stage-cap button { background: none; border: 1px solid rgba(201,168,106,.4); color: var(--ivory); padding: 9px 14px; font-size: 11px; letter-spacing: .16em; text-transform: uppercase; border-radius: 999px; }
+.vx .stage-cap button:hover { background: rgba(201,168,106,.15); }
+.vx .stage-cap button[disabled] { opacity: .35; cursor: default; }
+.vx .pulse { position: absolute; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--champagne); box-shadow: 0 0 0 0 rgba(201,168,106,.7); animation: vxPing 2.2s infinite; pointer-events: none; transition: opacity .4s; }
+.vx .stage.zoomed .pulse { opacity: 0; }
+
+/* detail panel */
+.vx .panel { min-height: 600px; }
+.vx .welcome h2 { font-family: var(--serif); font-weight: 400; color: var(--ivory); font-size: clamp(28px, 3vw, 40px); margin: 0 0 16px; line-height: 1.15; }
+.vx .welcome h2 em { color: var(--champagne); }
+.vx .floor-stack { list-style: none; margin: 26px 0 0; padding: 0; border-top: 1px solid rgba(201,168,106,.22); }
+.vx .floor-stack li { display: grid; grid-template-columns: 44px 1fr auto; gap: 10px; align-items: center; padding: 14px 0; border-bottom: 1px solid rgba(201,168,106,.22); font-size: 14px; cursor: pointer; transition: color .25s var(--ease), padding .25s var(--ease); }
+.vx .floor-stack li:hover { color: var(--ivory); padding-left: 6px; }
+.vx .floor-stack .no { font-family: var(--serif); color: var(--champagne); }
+.vx .floor-stack .cnt { font-size: 12px; color: var(--on-dark-soft); }
+.vx .detail { animation: vxPanelIn .7s var(--ease); }
+.vx .detail .lvl { font-family: var(--serif); font-size: 90px; line-height: .9; color: transparent; -webkit-text-stroke: 1px rgba(201,168,106,.7); margin-bottom: 6px; }
+.vx .detail h2 { font-family: var(--serif); font-weight: 400; color: var(--ivory); font-size: clamp(30px, 3.4vw, 46px); margin: 0 0 14px; line-height: 1.1; }
+.vx .detail h2 em { color: var(--champagne); }
+.vx .detail p { max-width: 58ch; }
+.vx .feat { list-style: none; padding: 0; margin: 18px 0 26px; display: grid; grid-template-columns: 1fr 1fr; column-gap: 26px; }
+.vx .feat li { padding: 10px 0; border-bottom: 1px solid rgba(201,168,106,.2); font-size: 14px; display: flex; gap: 10px; }
+.vx .feat li::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: var(--champagne); margin-top: 9px; flex: 0 0 auto; }
+.vx .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.vx .thumbs button { padding: 0; border: 0; background: #0B1526; overflow: hidden; border-radius: 2px; aspect-ratio: 4/3; position: relative; opacity: 0; animation: vxThumbIn .6s var(--ease) forwards; }
+.vx .thumbs button:first-child { grid-column: span 2; grid-row: span 2; aspect-ratio: auto; }
+.vx .thumbs img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease); }
+.vx .thumbs button:hover img { transform: scale(1.05); }
+.vx .thumbs .cap { position: absolute; left: 0; right: 0; bottom: 0; padding: 22px 10px 8px; font-size: 12px; text-align: left; color: var(--ivory); background: linear-gradient(0deg, rgba(11,21,38,.85), rgba(11,21,38,0)); }
+.vx .none { border: 1px dashed rgba(201,168,106,.5); padding: 22px; font-size: 14px; color: var(--on-dark-soft); }
+.vx .detail .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+
+@media (max-width: 1100px) {
+  .vx { grid-template-columns: minmax(0, 440px) minmax(0, 1fr); }
+  /* the level list wraps onto extra lines instead of scrolling sideways, so no name is ever cut */
+  .vx .rail { position: static; grid-column: 1 / -1; flex-direction: row; flex-wrap: wrap; gap: 8px; padding-bottom: 18px; border-bottom: 1px solid rgba(201,168,106,.22); }
+  .vx .rail .lift { display: none; }
+  .vx .rail button { flex: 0 1 auto; display: inline-flex; align-items: baseline; gap: 8px; border: 1px solid rgba(201,168,106,.3); border-radius: 999px; padding: 9px 16px; white-space: nowrap; }
+  .vx .rail button .nm { font-size: 16px; }
+  .vx .rail button .sub { display: none; }
+  .vx .rail button:hover, .vx .rail button.hover { border-color: var(--champagne); }
+  .vx .rail button[aria-pressed="true"] { border: 1px solid var(--champagne); background: rgba(201,168,106,.16); }
+  .vx .rail .all { margin: 0; border-color: transparent; }
+}
+@media (max-width: 760px) {
+  .vx { grid-template-columns: 1fr; gap: 22px; }
+  .vx .rail { gap: 6px; }
+  .vx .rail button { padding: 8px 13px; }
+  .vx .rail button .nm { font-size: 15px; }
+  .vx .stage-wrap { position: static; }
+  .vx .stage { aspect-ratio: 1024 / 1150; outline-offset: 6px; }
+  .vx .band .tag { font-size: 10px; padding: 5px 8px; }
+  .vx .panel { min-height: 0; }
+  .vx .feat { grid-template-columns: 1fr; }
+  .vx .thumbs { grid-template-columns: 1fr 1fr; }
+}
+@media (prefers-reduced-motion: reduce) { .vx .zoom { transition: none; } .vx .detail, .vx .thumbs button { animation: none; opacity: 1; } }

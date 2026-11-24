@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Explore the Villa, Level by Level | Jakkur Villa</title>
+  <meta name="description" content="Tap any floor of Jakkur Villa to zoom in and see that level's rooms: arrival, living, private suites, entertainment, wellness and terrace.">
+  <link rel="canonical" href="https://www.example.com/villa-explorer">
+  <meta property="og:title" content="Explore Jakkur Villa, floor by floor">
+  <meta property="og:description" content="Tap any of the six levels to zoom in and see the real rooms: arrival, living, suites, cinema, wellness and terrace.">
+  <meta property="og:image" content="https://www.example.com/images/exterior-dusk-facade.jpg">
+  <meta name="theme-color" content="#12203A">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/explorer.css">
+  <style>
+    body { background: var(--navy); color: var(--on-dark); }
+    .vx-top { position: sticky; top: 0; z-index: 50; background: rgba(18,32,58,.92); backdrop-filter: blur(10px); border-bottom: 1px solid rgba(201,168,106,.22); }
+    .vx-top .bar { display: flex; align-items: center; justify-content: space-between; height: 72px; }
+    .vx-top .wordmark span { color: var(--ivory); }
+    .vx-top .wordmark i { background: var(--champagne); }
+    .vx-top .back { color: var(--on-dark); text-decoration: none; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; }
+    .vx-top .back:hover { color: var(--champagne); }
+    .vx-intro { padding: 56px 0 28px; }
+    .vx-intro .h-section { color: var(--ivory); margin-bottom: 14px; }
+    .vx-intro .h-section em { color: var(--champagne); }
+    .vx-page { padding-bottom: 100px; }
+    @media (max-width: 760px) { .vx-top .back .long { display: none; } .vx .rail { top: 72px; } }
+  </style>
+</head>
+<body>
+<header class="vx-top">
+  <div class="container bar">
+    <a href="index.html" class="wordmark" aria-label="Jakkur Villa home"><span>JAKKUR VILLA</span><i></i></a>
+    <a class="back" href="index.html">← <span class="long">Back to the </span>website</a>
+  </div>
+</header>
+
+<main class="container vx-page">
+  <section class="vx-intro">
+    <p class="label"><span class="num">Explore</span> Six levels, one vertical story</p>
+    <h1 class="h-section">Tap a floor.<em>Step inside.</em></h1>
+    <p class="vx-hint"><i></i> Tap any floor on the villa, or choose a level from the list.</p>
+  </section>
+
+  <section class="vx" data-keys="global" aria-label="Interactive villa explorer">
+    <nav class="rail" aria-label="Levels"><p class="lift">Schindler lift · 6 levels</p></nav>
+    <div class="stage-wrap">
+      <div class="stage">
+        <div class="zoom">
+          <img src="images/exterior-dusk-facade.jpg" width="1024" height="1535" alt="Front of Jakkur Villa at dusk showing all six levels">
+          <div class="spot"></div>
+        </div>
+      </div>
+      <div class="stage-cap">
+        <button type="button" class="vx-prev" aria-label="Level below">↓ Below</button>
+        <span class="vx-where">Whole villa</span>
+        <button type="button" class="vx-next" aria-label="Level above">Above ↑</button>
+      </div>
+    </div>
+    <div class="panel" aria-live="polite"></div>
+  </section>
+</main>
+
+<div data-jv-footer></div>
+<script src="js/footer.js" defer></script>
+<script src="js/buttons.js" defer></script>
+<script src="js/explorer.js" defer></script>
+</body>
+</html>

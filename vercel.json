@@ -1,0 +1,13 @@
+{
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/gallery", "destination": "/#gallery", "permanent": false },
+    { "source": "/explore", "destination": "/villa-explorer", "permanent": false },
+    { "source": "/floor-plans", "destination": "/#plans", "permanent": false },
+    { "source": "/virtual-tour", "destination": "/#tour", "permanent": false },
+    { "source": "/book-a-visit", "destination": "/#book", "permanent": false }
+  ],
+  "headers": [
+    { "source": "/images/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] }
+  ]
+}
